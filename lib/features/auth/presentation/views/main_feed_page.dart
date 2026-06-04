@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nexoboard/features/auth/presentation/views/feed/feed_page.dart';
 import 'package:nexoboard/features/auth/presentation/views/profile/profile_page.dart';
 import 'package:nexoboard/features/auth/presentation/views/forum/create_forum_page.dart';
+import 'package:nexoboard/features/auth/presentation/views/forum/my_forum_page.dart';
 
 class MainFeedPage extends StatefulWidget {
   const MainFeedPage({super.key});
@@ -23,9 +24,7 @@ class _MainFeedPageState extends State<MainFeedPage> {
         child: Text('Búsqueda',
             style: TextStyle(color: Colors.white, fontSize: 18))),
     const SizedBox.shrink(),
-    const Center(
-        child: Text('Mis Foros',
-            style: TextStyle(color: Colors.white, fontSize: 18))),
+    const MyForumPage(),
     const ProfilePage(),
   ];
 
