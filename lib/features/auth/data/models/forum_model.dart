@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 /// Modelo que representa una opción de encuesta en un foro
@@ -169,6 +170,24 @@ class ModerationSettings extends Equatable {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'allowPhotos': allowPhotos,
+      'allowVideos': allowVideos,
+      'allowAudio': allowAudio,
+      'allowComments': allowComments,
+    };
+  }
+
+  factory ModerationSettings.fromMap(Map<String, dynamic> map) {
+    return ModerationSettings(
+      allowPhotos: map['allowPhotos'] ?? true,
+      allowVideos: map['allowVideos'] ?? true,
+      allowAudio: map['allowAudio'] ?? true,
+      allowComments: map['allowComments'] ?? true,
+    );
+  }
+
   @override
   List<Object?> get props =>
       [allowPhotos, allowVideos, allowAudio, allowComments];
@@ -219,7 +238,7 @@ class ForumModel extends Equatable {
   /// Retorna el total de votos en la encuesta
   int get totalPollVotes {
     if (poll == null) return 0;
-    return poll!.options.fold<int>(0, (sum, option) => sum + option.votes);
+    return poll!.options.fold<int>(0, (total, option) => total + option.votes);
   }
 
   /// Retorna el total de interacciones
@@ -265,6 +284,48 @@ class ForumModel extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'creatorId': creatorId,
+      'title': title,
+      'description': description,
+      'hashtag': hashtag,
+      'topic': topic,
+      'coverImageUrl': coverImageUrl,
+      'likes': likes,
+      'dislikes': dislikes,
+      'commentCount': commentCount,
+      'moderationSettings': moderationSettings.toMap(),
+      'createdAt': Timestamp.fromDate(createdAt),
+      'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
+      'isActive': isActive,
+    };
+  }
+
+  factory ForumModel.fromFirestore(DocumentSnapshot doc) {
+    final map = doc.data() as Map<String, dynamic>;
+    return ForumModel(
+      id: doc.id,
+      creatorId: map['creatorId'] ?? '',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      hashtag: map['hashtag'] ?? '',
+      topic: map['topic'] ?? '',
+      coverImageUrl: map['coverImageUrl'],
+      likes: map['likes'] ?? 0,
+      dislikes: map['dislikes'] ?? 0,
+      commentCount: map['commentCount'] ?? 0,
+      moderationSettings: map['moderationSettings'] != null
+          ? ModerationSettings.fromMap(
+              Map<String, dynamic>.from(map['moderationSettings']))
+          : const ModerationSettings(),
+      createdAt:
+          (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt: (map['updatedAt'] as Timestamp?)?.toDate(),
+      isActive: map['isActive'] ?? true,
     );
   }
 
