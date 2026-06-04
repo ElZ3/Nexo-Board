@@ -274,11 +274,10 @@ class _CreateForumPageState extends State<CreateForumPage>
               'Determina qué tipo de contenidos tienen permitido publicar tus miembros.',
               [Colors.purple[700]!, Colors.pink[700]!]),
           const SizedBox(height: 32),
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A1A1A),
-              borderRadius: BorderRadius.circular(16),
-            ),
+          Material(
+            color: const Color(0xFF1A1A1A),
+            borderRadius: BorderRadius.circular(16),
+            clipBehavior: Clip.antiAlias,
             child: Column(
               children: [
                 SwitchListTile(

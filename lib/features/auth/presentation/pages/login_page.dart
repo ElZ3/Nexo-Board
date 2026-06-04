@@ -100,6 +100,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       } catch (e) {
         if (mounted) {
+          _clearCredentials();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(e.toString().replaceAll('Exception: ', '')),
@@ -113,11 +114,18 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _navigateToRegister() {
-    Navigator.push(
+  void _clearCredentials() {
+    _emailController.clear();
+    _passwordController.clear();
+    _formKey.currentState?.reset();
+  }
+
+  void _navigateToRegister() async {
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const RegisterPage()),
     );
+    if (mounted) _clearCredentials();
   }
 
   @override

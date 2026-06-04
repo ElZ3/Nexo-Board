@@ -9,6 +9,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamilyFallback: const ['Roboto'],
       scaffoldBackgroundColor: scaffoldBackground,
       primaryColor: primaryColor,
       cardColor: cardBackground,
