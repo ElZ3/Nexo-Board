@@ -21,6 +21,18 @@ class ForumService {
             .toList());
   }
 
+  /// Stream de todos los foros activos. El filtrado/ordenado fino (por hashtag,
+  /// nombre, likes o dislikes) se resuelve en la capa de presentación para
+  /// permitir autocompletado por subcadena e insensible a mayúsculas.
+  Stream<List<ForumModel>> streamAllForums() {
+    return _forumsRef
+        .where('isActive', isEqualTo: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => ForumModel.fromFirestore(doc))
+            .toList());
+  }
+
   /// Actualiza los campos editables de un foro (título, descripción, imagen).
   /// El hashtag NO se modifica nunca.
   Future<void> updateForum({
