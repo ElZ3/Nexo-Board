@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nexoboard/features/auth/presentation/views/feed/feed_page.dart';
 import 'package:nexoboard/features/auth/presentation/views/profile/profile_page.dart';
 import 'package:nexoboard/features/auth/presentation/views/forum/create_forum_page.dart';
+import 'package:nexoboard/features/auth/data/models/forum_model.dart';
 
 class MainFeedPage extends StatefulWidget {
   const MainFeedPage({super.key});
@@ -13,10 +14,11 @@ class MainFeedPage extends StatefulWidget {
 
 class _MainFeedPageState extends State<MainFeedPage> {
   int _selectedIndex = 0;
+  final List<ForumModel> _forums = [];
 
-  late final List<Widget> _views = [
+  List<Widget> get _views => [
     FeedPage(
-      forums: const [],
+      forums: List.unmodifiable(_forums),
       onCreateForum: () => _onItemTapped(2),
     ),
     const Center(
@@ -36,6 +38,7 @@ class _MainFeedPageState extends State<MainFeedPage> {
         fullscreenDialog: true,
         builder: (context) => CreateForumPage(
           onForumCreated: (newForum) {
+            setState(() => _forums.insert(0, newForum));
             debugPrint('Foro creado exitosamente: ${newForum.title}');
           },
         ),

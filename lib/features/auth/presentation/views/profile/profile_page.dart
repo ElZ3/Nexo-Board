@@ -35,15 +35,18 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(
+            return SafeArea(
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 20,
                 right: 20,
                 top: 20,
               ),
-              child: SingleChildScrollView(
-                child: Column(
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -106,9 +109,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           ? null
                           : () async {
                               setModalState(() => isSaving = true);
+                              var closeAfterSave = false;
                               try {
+                                final currentUser = _auth.currentUser;
+                                if (currentUser == null) {
+                                  throw Exception('Tu sesión expiró. Inicia sesión otra vez.');
+                                }
                                 await _authService.updateUserProfile(
-                                  uid: _auth.currentUser!.uid,
+                                  uid: currentUser.uid,
                                   currentUsername: userData['username'],
                                   newUsername: usernameController.text.trim(),
                                   newDescription:
@@ -116,6 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   newProfileImage: selectedImage,
                                 );
                                 if (context.mounted) {
+                                  closeAfterSave = true;
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -134,7 +143,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   );
                                 }
                               } finally {
-                                setModalState(() => isSaving = false);
+                                if (context.mounted && !closeAfterSave) {
+                                  setModalState(() => isSaving = false);
+                                }
                               }
                             },
                       child: isSaving
@@ -147,7 +158,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               style: TextStyle(color: Colors.white)),
                     ),
                     const SizedBox(height: 20),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -172,6 +184,11 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(
+              child: Text('No se pudo conectar con el perfil.',
+                  style: TextStyle(color: Colors.white)));
         }
         if (!snapshot.hasData || !snapshot.data!.exists) {
           return const Center(

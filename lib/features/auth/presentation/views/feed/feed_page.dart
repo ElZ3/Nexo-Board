@@ -39,6 +39,19 @@ class _FeedPageState extends State<FeedPage>
     _forums.addAll(widget.forums);
   }
 
+
+  @override
+  void didUpdateWidget(covariant FeedPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.forums != widget.forums) {
+      setState(() {
+        _forums
+          ..clear()
+          ..addAll(widget.forums);
+      });
+    }
+  }
+
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
@@ -110,6 +123,8 @@ class _FeedPageState extends State<FeedPage>
   void _showCommentBottomSheet(ForumModel forum) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.grey[900],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -265,6 +280,7 @@ class _FeedPageState extends State<FeedPage>
       context: context,
       backgroundColor: Colors.grey[900],
       isScrollControlled: true,
+      useSafeArea: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(20),
@@ -538,10 +554,12 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[900],
-      child: Column(
-        children: [
-          Container(
-            height: 5,
+      child: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            Container(
+              height: 5,
             width: 40,
             margin: const EdgeInsets.only(top: 12),
             decoration: BoxDecoration(
@@ -669,7 +687,8 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
               ],
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
