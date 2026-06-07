@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
     <string>NexaBoard necesita acceso a tu cámara para capturar tu foto de perfil.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>NexaBoard necesita acceso al micrófono si grabas notas de voz para tus foros.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>NexaBoard necesita acceso a tu galería para seleccionar imágenes para tus foros.</string>
     <key>NSPhotoLibraryAddOnlyUsageDescription</key>

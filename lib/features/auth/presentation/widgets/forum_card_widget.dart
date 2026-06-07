@@ -98,6 +98,26 @@ class _ForumCardWidgetState extends State<ForumCardWidget>
     widget.onComment();
   }
 
+  Widget _buildCoverFallback() {
+    return Container(
+      height: 180,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.purple[600]!,
+            Colors.blue[600]!,
+          ],
+        ),
+      ),
+      child: const Center(
+        child: Icon(LucideIcons.imageOff, color: Colors.white54, size: 32),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -136,22 +156,23 @@ class _ForumCardWidgetState extends State<ForumCardWidget>
                       height: 180,
                       width: double.infinity,
                       fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: 180,
+                          width: double.infinity,
+                          color: Colors.grey[850],
+                          child: const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return _buildCoverFallback();
+                      },
                     )
                   else
-                    Container(
-                      height: 180,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.purple[600]!,
-                            Colors.blue[600]!,
-                          ],
-                        ),
-                      ),
-                    ),
+                    _buildCoverFallback(),
                   // Gradiente oscuro superior
                   Container(
                     height: 180,
